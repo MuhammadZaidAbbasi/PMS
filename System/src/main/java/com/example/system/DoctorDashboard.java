@@ -1,10 +1,8 @@
 package com.example.system;
 
-import AppointmentScheduling.Appointment;
 import NotificationAndRemainder.EmailNotification;
 import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -25,9 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-import kotlin.OverloadResolutionByLambdaReturnType;
 import management.*;
-//import AppointmentScheduling.*;
 
 import static Database.DataBaseConnection.getConnection;
 
@@ -60,9 +56,9 @@ public class DoctorDashboard extends Application {
     private Pane AppointmentView;
     private Pane EmailView;
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+//    public static void main(String[] args) {
+//        launch(args);
+//    }
 
     @Override
     public void start(Stage primaryStage) {
@@ -159,7 +155,7 @@ public class DoctorDashboard extends Application {
             System.out.println("Patient added successfully.");
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Database error occurred", e);
         }
     }
     private Pane buildAppointmentView() {
@@ -226,11 +222,11 @@ public class DoctorDashboard extends Application {
 
             TableColumn<Appointment, String> statusCol = new TableColumn<>("Status");
             statusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
-            statusCol.setPrefWidth(90);
+            statusCol.setPrefWidth(85);
 
             TableColumn<Appointment, String> reasonCol = new TableColumn<>("Reason");
             reasonCol.setCellValueFactory(new PropertyValueFactory<>("reason"));
-            reasonCol.setPrefWidth(100);
+            reasonCol.setMinWidth(110);
 
             TableColumn<Appointment, Void> actionCol = new TableColumn<>("Actions");
             actionCol.setCellFactory(param -> new TableCell<>() {
@@ -241,16 +237,17 @@ public class DoctorDashboard extends Application {
                 {
                     approveBtn.setOnAction(event -> {
                         Appointment request = getTableView().getItems().get(getIndex());
-                        request.setStatus("Approved");
+                        request.setStatus("Approved ");
                         table.refresh();
                         // TODO: Update status in DB
                     });
                     rejectBtn.setOnAction(event -> {
                         Appointment request = getTableView().getItems().get(getIndex());
-                        request.setStatus("Rejected");
+                        request.setStatus("Rejected ");
                         table.refresh();
                         // TODO: Update status in DB
                     });
+
                 }
 
                 @Override
@@ -261,7 +258,7 @@ public class DoctorDashboard extends Application {
                 }
 
             });
-            actionCol.setPrefWidth(180);
+            actionCol.setPrefWidth(160);
 
             table.getColumns().addAll(patientCol, dateCol, timeCol, statusCol, reasonCol, actionCol);
 
@@ -298,9 +295,8 @@ public class DoctorDashboard extends Application {
                     requests.add(appointment);
                 }
             }
-            catch(Exception e){
-
-                e.printStackTrace();
+            catch (SQLException e) {
+                LOGGER.log(Level.SEVERE, "Database error occurred", e);
             }
          table.setItems(requests);
 
@@ -314,13 +310,15 @@ public class DoctorDashboard extends Application {
      * Builds the sidebar navigation with buttons for each section.
      * returns a VBox containing the sidebar components.
      */
-    void UpdateBtn(Button btn){
-        String style=btn.getStyle();
-        if (style.contains("-fx-background-color: green")) {
-            btn.setStyle("-fx-background-color: #ffffff; -fx-text-fill: #336699;-fx-font-size: 14; -fx-font-weight: bold;");// reset style
-        } else {
-            btn.setStyle("-fx-background-color: green; -fx-border-color: black;-fx-border-width: 3px;" +
-                    "-fx-font-size: 14; -fx-text-fill: black; -fx-font-weight: bold;    ");
+    void UpdateBtn(List<Button> btn,Button current){
+        for(Button currentBtn :btn) {
+            if (currentBtn.equals(current)){
+                currentBtn.setStyle("-fx-background-color: green; -fx-border-color: black;-fx-border-width: 3px;" +
+                        "-fx-font-size: 14; -fx-text-fill: black; -fx-font-weight: bold;   ");
+            }
+            else{
+                currentBtn.setStyle("-fx-background-color: #ffffff; -fx-text-fill: #336699;-fx-font-size: 14; -fx-font-weight: bold;");// reset style
+            }
         }
     }
     private VBox buildSidebar() {
@@ -329,11 +327,13 @@ public class DoctorDashboard extends Application {
         box.setPrefWidth(200);
         box.setStyle("-fx-background-color: #336699;");
 
+        List<Button> allButton=new ArrayList<>();
 
         Button profileBtn = new Button("Profile");
+        allButton.add(profileBtn);
         profileBtn.setMaxWidth(Double.MAX_VALUE);
         profileBtn.setOnAction(e -> {
-            UpdateBtn(profileBtn);
+            UpdateBtn(allButton,profileBtn);
             try {
                 root.setCenter(profileView);
             } catch (Exception ex) {
@@ -341,21 +341,11 @@ public class DoctorDashboard extends Application {
             }
         });
 
-        Button patientsBtn = new Button("Patients");
-        patientsBtn.setMaxWidth(Double.MAX_VALUE);
-        patientsBtn.setOnAction(e -> {
-            UpdateBtn(patientsBtn);
-            try {
-                root.setCenter(patientListView);
-            } catch (Exception ex) {
-                showAlert(Alert.AlertType.ERROR, "Error", "Failed to show patient list.");
-            }
-        });
-
         Button updateBtn = new Button("Update Profile");
+        allButton.add(updateBtn);
         updateBtn.setMaxWidth(Double.MAX_VALUE);
         updateBtn.setOnAction(e -> {
-            UpdateBtn(updateBtn);
+            UpdateBtn(allButton,updateBtn);
             try {
                 root.setCenter(updateProfileView);
             } catch (Exception ex) {
@@ -363,20 +353,36 @@ public class DoctorDashboard extends Application {
             }
         });
 
+        Button patientsBtn = new Button("Patients");
+        allButton.add(patientsBtn);
+        patientsBtn.setMaxWidth(Double.MAX_VALUE);
+        patientsBtn.setOnAction(e -> {
+            UpdateBtn(allButton,patientsBtn);
+            try {
+                root.setCenter(patientListView);
+            } catch (Exception ex) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Failed to show patient list.");
+            }
+        });
+
         Button feedbackBtn = new Button("Feedback");
+        allButton.add(feedbackBtn);
         feedbackBtn.setMaxWidth(Double.MAX_VALUE);
         feedbackBtn.setOnAction(e -> {
-            UpdateBtn(feedbackBtn);
+            UpdateBtn(allButton,feedbackBtn);
             try {
                 root.setCenter(feedbackFormView);
             } catch (Exception ex) {
                 showAlert(Alert.AlertType.ERROR, "Error", "Failed to show feedback form.");
             }
         });
-        Button AppointmentBtn=new Button("Appointment");
-        AppointmentBtn.setMaxWidth(Double.MAX_VALUE);
-        AppointmentBtn.setOnAction(e -> {
-            UpdateBtn(AppointmentBtn);
+
+
+        Button appointmentBtn=new Button("Appointment");
+        allButton.add(appointmentBtn);
+        appointmentBtn.setMaxWidth(Double.MAX_VALUE);
+        appointmentBtn.setOnAction(e -> {
+            UpdateBtn(allButton,appointmentBtn);
             try {
                 root.setCenter(AppointmentView);
             } catch (Exception ex) {
@@ -384,10 +390,11 @@ public class DoctorDashboard extends Application {
             }
         });
 
-        Button EmailBtn=new Button("Send Eamil");
-        EmailBtn.setMaxWidth(Double.MAX_VALUE);
-        EmailBtn.setOnAction(e -> {
-            UpdateBtn(EmailBtn);
+        Button emailBtn=new Button("Send Eamil");
+        allButton.add(emailBtn);
+        emailBtn.setMaxWidth(Double.MAX_VALUE);
+        emailBtn.setOnAction(e -> {
+            UpdateBtn(allButton,emailBtn);
             try {
                 root.setCenter(EmailView);
             } catch (Exception ex) {
@@ -395,20 +402,33 @@ public class DoctorDashboard extends Application {
             }
         });
 
+        Button chatBtn = new Button("Start Chat");
+        allButton.add(chatBtn);
+        chatBtn.setMaxWidth(Double.MAX_VALUE);
+        chatBtn.setOnAction(e -> {
+            UpdateBtn(allButton,chatBtn);
+            try {
+                root.setCenter(profileView);
+            } catch (Exception ex) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Failed to start chat.");
+            }
+        });
 
         Button logoutBtn=new Button("Logout");
+        allButton.add(logoutBtn);
         logoutBtn.setMaxWidth(Double.MAX_VALUE);
         logoutBtn.setOnAction(e -> {
-            UpdateBtn(logoutBtn);
+            UpdateBtn(allButton,logoutBtn);
 
         });
 
+
         // Style buttons
-        for (Button btn : new Button[]{profileBtn, patientsBtn, updateBtn, feedbackBtn,logoutBtn,AppointmentBtn,EmailBtn}) {
+        for (Button btn : allButton) {
             btn.setStyle("-fx-background-color: #ffffff; -fx-text-fill: #336699;-fx-font-size: 14; -fx-font-weight: bold;");
 
         }
-        box.getChildren().addAll( profileBtn, updateBtn, patientsBtn, feedbackBtn,AppointmentBtn,EmailBtn,logoutBtn);
+        box.getChildren().addAll( allButton);
         return box;
 
     }
@@ -826,7 +846,7 @@ public class DoctorDashboard extends Application {
      * @param title the title of the dialog.
      * @param message the message content.
      */
-    private void showAlert(Alert.AlertType type, String title, String message) {
+    public static  void showAlert(Alert.AlertType type, String title, String message) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setHeaderText(null);
@@ -839,7 +859,7 @@ public class DoctorDashboard extends Application {
      * @param email the email string to validate.
      * @return true if the email is in a valid format, false otherwise.
      */
-    private boolean isValidEmail(String email) {
+    public static boolean isValidEmail(String email) {
         // Basic regex for email validation
         String emailRegex = "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$";
         return Pattern.matches(emailRegex, email);
@@ -865,6 +885,8 @@ public class DoctorDashboard extends Application {
 
         public void setStatus(String newStatus) { status.set(newStatus); }
     }
+
+
     public static class Appointment{
 
         private final SimpleStringProperty appointmentId;
@@ -921,15 +943,6 @@ public class DoctorDashboard extends Application {
         public void setStatus(String status) {
             this.status.set(status);
         }
-
-        // === Property getters (optional, useful for binding) ===
-//
-//        public StringProperty appointmentIdProperty() { return appointmentId; }
-//        public StringProperty statusProperty() { return status; }
-//        public StringProperty doctorProperty() { return doctor; }
-//        public StringProperty patientProperty() { return patient; }
-//        public StringProperty dateProperty() { return date; }
-//        public StringProperty timeProperty() { return time; }
 
         @Override
         public String toString() {
