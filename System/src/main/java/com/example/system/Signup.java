@@ -111,8 +111,12 @@ public class Signup extends Application {
         backToLoginBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #1976d2; " +
                 "-fx-font-size: 13px; -fx-underline: true;");
         backToLoginBtn.setOnAction(e -> {
-            // Replace this with actual login navigation logic
-            System.out.println("Returning to Login...");
+            try {
+
+                ((Stage) backToLoginBtn.getScene().getWindow()).close(); // Close current Signup window
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         });
 
         // Handle role-based field visibility
