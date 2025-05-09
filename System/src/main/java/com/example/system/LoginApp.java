@@ -9,11 +9,17 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-public class LoginApp extends Application {
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
+import static Database.DataBaseConnection.getConnection;
+
+public class LoginApp extends Application {
+    private String authorizedUserId;
     private TextField emailField;
     private PasswordField passwordField;
-    private ComboBox<String> roleBox;
     private Label statusLabel;
 
     @Override
@@ -27,7 +33,7 @@ public class LoginApp extends Application {
         title.setTextFill(Color.web("#0d47a1"));
 
         emailField = new TextField();
-        emailField.setPromptText("Email");
+        emailField.setPromptText("Enter Your Email");
         styleInput(emailField);
 
         passwordField = new PasswordField();
@@ -47,7 +53,7 @@ public class LoginApp extends Application {
         loginButton.setOnAction(e -> login());
 
         Hyperlink signupLink = new Hyperlink("Don't have an account? Sign up");
-        signupLink.setStyle("-fx-text-fill: #0d47a1;");
+        signupLink.setStyle("-fx-text-fill: #0d47a1; -fx-font-size: 16px; ");
         signupLink.setOnAction(e-> {
             try {
                 new Signup().start(new Stage());
@@ -73,26 +79,52 @@ public class LoginApp extends Application {
                 "-fx-background-radius: 8; " +
                         "-fx-border-radius: 8; " +
                         "-fx-border-color: #b0bec5; " +
-                        "-fx-font-size: 14;"
+                        "-fx-font-size: 16;"
         );
         field.setMaxWidth(250);
+        field.setPrefHeight(40);
     }
 
     private void login() {
         String email = emailField.getText();
         String password = passwordField.getText();
 
+        String get="SELECT user_id FROM authorization  WHERE email = ? AND password = ? ";
+        try(Connection conn = getConnection();
+            PreparedStatement stmt= conn.prepareStatement(get)){
+            stmt.setString(1,email);
+            stmt.setString(2,password);
 
-        if (email.equals("admin") && password.equals("123")) {
-            statusLabel.setTextFill(Color.GREEN);
-            statusLabel.setText("Login successful ");
-        } else {
-            statusLabel.setTextFill(Color.RED);
-            statusLabel.setText("Login failed. Please check your credentials.");
+            ResultSet rs = stmt.executeQuery();
+
+            if(!rs.next()){
+                DoctorDashboard.showAlert(Alert.AlertType.ERROR,"Authorization Declined","Login failed. Please check your credentials.");
+                emailField.clear();
+                passwordField.clear();;
+                return;
+            }
+            authorizedUserId=rs.getString("user_id");
+            if(authorizedUserId.startsWith("P")){
+
+            }
+            else if (authorizedUserId.startsWith("D")){
+                DoctorDashboard.currentDoctorId=authorizedUserId;
+                statusLabel.setTextFill(Color.GREEN);
+                statusLabel.setText("Login successful as Doctor");
+                ((Stage) emailField.getScene().getWindow()).close();
+                new DoctorDashboard().start(new Stage());
+            }
+
+
+        }catch(SQLException e){
+            e.printStackTrace();
         }
+
+
     }
 
     public static void main(String[] args) {
         launch(args);
     }
+}
 }
