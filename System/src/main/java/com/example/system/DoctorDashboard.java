@@ -9,8 +9,6 @@ import javafx.scene.layout.*;
 import javafx.geometry.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.collections.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
@@ -24,15 +22,12 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import management.*;
-
 import static Database.DataBaseConnection.getConnection;
 
 /**
  * DoctorDashboard Application
- *
  * A JavaFX application for a doctor's dashboard,
  * including sidebar navigation, patient list, profile view, feedback form, and profile update form.
- *
  * This single-file implementation uses modular methods for each view and helper methods for UI components.
  * It also includes basic validation and alert dialogs for success/error notifications.
  */
@@ -40,9 +35,8 @@ public class DoctorDashboard extends Application {
     private static final Logger LOGGER = Logger.getLogger(DoctorDashboard.class.getName());
 
     // In-memory dummy data for Doctor and Patients
-    private String currentDoctorId;
-    private Doctor doc;
-    private List<Patient> patients;
+    public static String currentDoctorId;
+    private Doctor doc;;
 
     // Main layout pane
     private BorderPane root;
@@ -55,10 +49,9 @@ public class DoctorDashboard extends Application {
     private Pane feedbackFormView;
     private Pane AppointmentView;
     private Pane EmailView;
+    private Pane chatView;
+    private Pane vitalView;
 
-//    public static void main(String[] args) {
-//        launch(args);
-//    }
 
     @Override
     public void start(Stage primaryStage) {
@@ -67,31 +60,13 @@ public class DoctorDashboard extends Application {
         doc.setDate_of_birth(LocalDate.parse("1999-10-25"));
         doc.setEmail("john1234@gmail.com");
         doc.setPhoneNumber("331-750-85");
-//Patient saim=
-
-//        patients = new ArrayList<>();
-//        Patient saim=new Patient("Saim Abbasi","saim12abc@gmail.com","12-3456","A+");
-//        saim.setGender("male");
-//        saim.setDate_of_birth(LocalDate.parse("2024-10-23"));
-//        patients.add(saim);
-//        Patient ayesha=new Patient("Ayesha", "Smith@gmail.com", "30", "B-");
-//        ayesha.setGender("female");
-//        ayesha.setDate_of_birth(LocalDate.parse("2012-11-13"));
-//        patients.add(ayesha);
-//
-//        //        patients.add(new Patient("Bobby", "Johnson@gmail.com", "45", "O+"));
-////        patients.add(new Patient("Ahmed", "Williams@gmail.com", "29", "AB+"));
-//
-//for(Patient p:patients) {
-//    insertPatient(p);
-//}
 
         sidebar = buildSidebar();
         // Main layout
         root = new BorderPane();
 
 
-        profileView = buildProfileView();
+        profileView = buildProfileView(currentDoctorId);
         profileView.setPadding(new Insets(0,20,0,20));
         patientListView = buildPatientListView();
         updateProfileView = buildUpdateProfileView();
@@ -120,197 +95,183 @@ public class DoctorDashboard extends Application {
         primaryStage.setMinHeight(500);
         primaryStage.show();
     }
-    public void insertPatient(Patient patient) {
-        String sql = "INSERT INTO patient (patient_id, name, Dob, contact, email, blood_group, gender, registration_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
+    private Pane buildAppointmentView() {
+        VBox mainView = new VBox(20);
+        mainView.setPadding(new Insets(20));
+        mainView.setStyle("-fx-font-size: 14px;");
+
+        Label header = new Label("Appointment Manager");
+        header.setFont(Font.font("Arial", FontWeight.BOLD, 22));
+// ----------------- Availability Section -----------------
+        Label availHeader = new Label("Set Availability");
+        availHeader.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+
+// Date Picker for selecting a specific date
+        DatePicker datePicker = new DatePicker();
+        datePicker.setPromptText("Select Date");
+
+// ComboBox for selecting a time slot
+        ComboBox<String> TimeBox = new ComboBox<>();
+        TimeBox.setPromptText("Select Time Slot");
+        for (int hour = 8; hour <= 17; hour++) { // last slot ends at 18:00
+            TimeBox.getItems().add(
+                    LocalTime.of(hour, 0) + " - " + LocalTime.of(hour + 1, 0)
+            );
+        }
+        datePicker.valueProperty().addListener((obs, oldDate, newDate) -> {
+            if (newDate != null && newDate.isBefore(LocalDate.now())) {
+                showAlert(Alert.AlertType.WARNING, "Invalid Date", "You cannot select a past date.");
+                datePicker.setValue(null);
+                TimeBox.setDisable(true);
+            } else {
+                TimeBox.setDisable(false);
+            }
+        });
+        Button addAvailabilityBtn = new Button("Add Availability");
+        addAvailabilityBtn.setOnAction(e -> {
+
+            LocalDate date = datePicker.getValue();
+            String time = TimeBox.getValue();
+
+            if (date == null || time == null ) {
+                showAlert(Alert.AlertType.ERROR, "Invalid Input", "Please Select Both Date and Time First.");
+            }
+            else{
+                String insert="INSERT INTO doctor_availability values(?,?,?)";
+                try (Connection conn = getConnection();
+                     PreparedStatement statement = conn.prepareStatement(insert)){
+
+                    statement.setString(1, currentDoctorId);
+                    statement.setString(2, time);
+                    statement.setDate(3, java.sql.Date.valueOf(date.toString()));
+
+                    statement.executeUpdate();
+                } catch (Exception ex) {
+                    LOGGER.log(Level.SEVERE, "Database error occurred", ex);
+                }
+                showAlert(Alert.AlertType.CONFIRMATION, "conformation", "Availability Added To Database Successfully");
+
+                datePicker.setValue(null);
+                TimeBox.setValue(null);
+
+            }
+
+        });
+
+        HBox availInput = new HBox(10, new Label("Date:"), datePicker,
+                new Label("Time:"), TimeBox,  addAvailabilityBtn);
+        availInput.setAlignment(Pos.CENTER_LEFT);
+
+        // ----------------- Appointment Request Section -----------------
+        Label requestHeader = new Label("Appointment Requests");
+        requestHeader.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+        VBox appointmentList = new VBox();
+        appointmentList.setPadding(new Insets(10));
+        appointmentList.setSpacing(10);
+        appointmentList.setStyle("-fx-background-color: #f4f4f4;  -fx-border-radius: 5px;");
+
+        ScrollPane scrollPane = new ScrollPane(appointmentList);
+        scrollPane.setFitToWidth(true); // Makes the content take full width
+        appointmentList.setPrefWidth(Region.USE_COMPUTED_SIZE); // Ensures VBox grows to fit width
+        appointmentList.setMaxWidth(Double.MAX_VALUE);
+
+        ArrayList<Appointment> requests = new ArrayList<>();
+        String selectQuery = "SELECT * FROM appointments WHERE doctor_id = ? AND status = ? ";
+        String subQuery = "SELECT name FROM patient WHERE patient_id = ? ";
+        ArrayList<String> appIdList =new ArrayList<>();
         try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement statement = conn.prepareStatement(selectQuery)){
 
-//            DateTimeFormatter formatter= DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            statement.setString(1, currentDoctorId);
+            statement.setString(2,"pending");
 
-            LocalDate dob = patient.getDate_of_birth();
-            LocalDate regDate = patient.getRegistrationDate();
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                appIdList.add(resultSet.getString("app_id"));
+                String status = resultSet.getString("status");
+                String doctorId = resultSet.getString("doctor_id");
+                String patientId = resultSet.getString("patient_id");
+                PreparedStatement subStatement = conn.prepareStatement(subQuery);
+                subStatement.setString(1,patientId);
+                ResultSet rs=subStatement.executeQuery();
+                rs.next();
+                String patientName = rs.getString("name");
 
-            if (dob == null) {
-                System.err.println("DOB is null!");
+                String date = resultSet.getDate("date").toString();
+                String time = resultSet.getString("time");
+                String reason = resultSet.getString("reason");
+
+                Appointment appointment = new Appointment(status, doctorId, patientName, date, time, reason);
+                requests.add(appointment);
             }
-            if (regDate == null) {
-                System.err.println("DOB is null!");
-            }
-            java.sql.Date sqlDob = (dob != null) ? java.sql.Date.valueOf(dob) : null;
-            java.sql.Date sqlRegDate = (regDate != null) ? java.sql.Date.valueOf(regDate) : null;
-
-
-
-            stmt.setString(1, patient.getUserId());
-            stmt.setString(2, patient.getName());
-            stmt.setDate(3, sqlDob);
-            stmt.setString(4, patient.getPhoneNumber());
-            stmt.setString(5, patient.getEmail());
-            stmt.setString(6, patient.getBloodType());
-            stmt.setString(7, patient.getGender());
-            stmt.setDate(8, sqlRegDate);
-
-            stmt.executeUpdate();
-            System.out.println("Patient added successfully.");
-
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Database error occurred", e);
         }
-    }
-    private Pane buildAppointmentView() {
 
-            VBox mainView = new VBox(20);
-            mainView.setPadding(new Insets(20));
-            mainView.setStyle("-fx-font-size: 14px;");
+        for (int i=0;i< requests.size();i++) {
+            Appointment appt = requests.get(i);
+            String appId = appIdList.get(i);
+                        Label id = new Label("Appointment Id  :  " + appId);
+                        Label patientLabel = new Label("Patient  : " + appt.getPatient());
+                        Label dateLabel = new Label("Date  : " + appt.getDate());
+                        Label timeLabel = new Label("Time  : " + appt.getTime());
+                        Label reasonLabel = new Label("Reason  : "+ appt.getReason());
+                        Label statusLabel = new Label("Status  : " + appt.getStatus());
+            
+                        Button approveBtn = new Button("Approve");
+                        Button rejectBtn = new Button("Reject");
+                        String update = "UPDATE appointments SET status = ? WHERE app_id = ?";
 
-            Label header = new Label("Appointment Manager");
-            header.setFont(Font.font("Arial", FontWeight.BOLD, 22));
+                        approveBtn.setOnAction(e -> {
+                            try (Connection conn = getConnection();
+                                 PreparedStatement statement = conn.prepareStatement(update)){
 
-            // ----------------- Availability Section -----------------
-            Label availHeader = new Label("Set Availability");
-            availHeader.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+                                statement.setString(1, "Approved");
+                                statement.setString(2, appId );
 
-            ComboBox<String> dayOfWeekBox = new ComboBox<>();
-            dayOfWeekBox.getItems().addAll("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday");
+                                statement.executeUpdate();
+                            } catch (Exception ex) {
+                                LOGGER.log(Level.SEVERE, "Database error occurred", ex);
+                            }
+                            statusLabel.setText("Status: Approved");
+                        });
+            
+                        rejectBtn.setOnAction(e -> {
+                            try (Connection conn = getConnection();
+                                 PreparedStatement statement = conn.prepareStatement(update)){
 
-            ComboBox<LocalTime> startTimeBox = new ComboBox<>();
-            ComboBox<LocalTime> endTimeBox = new ComboBox<>();
-            for (int hour = 8; hour <= 18; hour++) {
-                startTimeBox.getItems().add(LocalTime.of(hour, 0));
-                endTimeBox.getItems().add(LocalTime.of(hour, 0));
-            }
+                                statement.setString(1, "Rejected");
+                                statement.setString(2, appId );
+                                statement.executeUpdate();
+                            } catch (Exception ex) {
+                                LOGGER.log(Level.SEVERE, "Database error occurred", ex);
+                            }
+                            statusLabel.setText("Status: Rejected");
+                        });
+            
+                        HBox actionBox = new HBox(10, approveBtn, rejectBtn);
+                        actionBox.setAlignment(Pos.CENTER_LEFT);
 
-            Button addAvailabilityBtn = new Button("Add Availability");
-            addAvailabilityBtn.setOnAction(e -> {
-                String day = dayOfWeekBox.getValue();
-                LocalTime start = startTimeBox.getValue();
-                LocalTime end = endTimeBox.getValue();
+                        VBox apptBox = new VBox(5,id, patientLabel, dateLabel, timeLabel, reasonLabel, statusLabel, actionBox);
+                        apptBox.setPadding(new Insets(5,0,10,10));
+                        apptBox.setMaxWidth(Double.MAX_VALUE);
+                        VBox.setVgrow(apptBox, Priority.ALWAYS);
 
-                if (day == null || start == null || end == null || !start.isBefore(end)) {
-                    showAlert(Alert.AlertType.ERROR, "Invalid Input", "Please select valid day and time range.");
-                    return;
-                }
+                        apptBox.setStyle("-fx-background-color: #fff; -fx-border-color: #ddd; -fx-border-radius: 5px;");
+                        appointmentList.getChildren().add(apptBox);
+        }
 
-                // TODO: Store in database - doctor_availability
 
-                System.out.println("Availability added: " + day + " " + start + " to " + end);
-            });
+        // Combine everything into the main layout
+        mainView.getChildren().addAll(header, availHeader, availInput, requestHeader, scrollPane);
 
-            HBox availInput = new HBox(10, new Label("Day:"), dayOfWeekBox,
-                    new Label("From:"), startTimeBox, new Label("To:"), endTimeBox, addAvailabilityBtn);
-            availInput.setAlignment(Pos.CENTER_LEFT);
-
-            // ----------------- Appointment Request Section -----------------
-            Label requestHeader = new Label("Appointment Requests");
-            requestHeader.setFont(Font.font("Arial", FontWeight.BOLD, 16));
-
-            TableView<Appointment> table = new TableView<>();
-            table.setPrefHeight(300);
-
-            TableColumn<Appointment, String> patientCol = new TableColumn<>("Patient");
-            patientCol.setCellValueFactory(new PropertyValueFactory<>("patient"));
-            patientCol.setPrefWidth(130);
-
-            TableColumn<Appointment, String> dateCol = new TableColumn<>("Date");
-            dateCol.setCellValueFactory(new PropertyValueFactory<>("date"));
-            dateCol.setPrefWidth(100);
-
-            TableColumn<Appointment, String> timeCol = new TableColumn<>("Time");
-            timeCol.setCellValueFactory(new PropertyValueFactory<>("time"));
-            timeCol.setPrefWidth(80);
-
-            TableColumn<Appointment, String> statusCol = new TableColumn<>("Status");
-            statusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
-            statusCol.setPrefWidth(85);
-
-            TableColumn<Appointment, String> reasonCol = new TableColumn<>("Reason");
-            reasonCol.setCellValueFactory(new PropertyValueFactory<>("reason"));
-            reasonCol.setMinWidth(110);
-
-            TableColumn<Appointment, Void> actionCol = new TableColumn<>("Actions");
-            actionCol.setCellFactory(param -> new TableCell<>() {
-                final Button approveBtn = new Button("Approve");
-                final Button rejectBtn = new Button("Reject ");
-                final HBox hbox = new HBox(8, approveBtn, rejectBtn);
-
-                {
-                    approveBtn.setOnAction(event -> {
-                        Appointment request = getTableView().getItems().get(getIndex());
-                        request.setStatus("Approved ");
-                        table.refresh();
-                        // TODO: Update status in DB
-                    });
-                    rejectBtn.setOnAction(event -> {
-                        Appointment request = getTableView().getItems().get(getIndex());
-                        request.setStatus("Rejected ");
-                        table.refresh();
-                        // TODO: Update status in DB
-                    });
-
-                }
-
-                @Override
-                protected void updateItem(Void item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty) setGraphic(null);
-                    else setGraphic(hbox);
-                }
-
-            });
-            actionCol.setPrefWidth(160);
-
-            table.getColumns().addAll(patientCol, dateCol, timeCol, statusCol, reasonCol, actionCol);
-
-            // TODO: Load appointments from database
-            ObservableList<Appointment> requests = FXCollections.observableArrayList();
-//                    (
-//                    new Appointment("pending", currentDoctorId, "Taha", "2025-05-02","10:00","headache from last 5 days "),
-//                    new Appointment("pending",  currentDoctorId, "Zaid", "2025-05-02","11:00","pain in left shoulder")
-//            );
-                String selectQuery = "SELECT * FROM appointments WHERE doctor_id = ? AND status = ? ";
-                String subQuery = "SELECT name FROM patient WHERE patient_id = ? ";
-            try (Connection conn = getConnection();
-                 PreparedStatement statement = conn.prepareStatement(selectQuery);){
-
-                statement.setString(1, currentDoctorId);
-                statement.setString(2,"pending");
-
-                ResultSet resultSet = statement.executeQuery();
-                while (resultSet.next()) {
-                    String status = resultSet.getString("status");
-                    String doctorId = resultSet.getString("doctor_id");
-                    String patientId = resultSet.getString("patient_id");
-                            PreparedStatement subStatement = conn.prepareStatement(subQuery);
-                            subStatement.setString(1,patientId);
-                            ResultSet rs=subStatement.executeQuery();
-                    rs.next();
-                        String patientName = rs.getString("name");
-
-                    String date = resultSet.getString("date");
-                    String time = resultSet.getString("time");
-                    String reason = resultSet.getString("reason");
-
-                    Appointment appointment = new Appointment(status, doctorId, patientName, date, time, reason);
-                    requests.add(appointment);
-                }
-            }
-            catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, "Database error occurred", e);
-            }
-         table.setItems(requests);
-
-            // Combine everything into the main layout
-            mainView.getChildren().addAll(header, availHeader, availInput, requestHeader, table);
-            return mainView;
+        return mainView;
 
     }
 
-    /**
-     * Builds the sidebar navigation with buttons for each section.
-     * returns a VBox containing the sidebar components.
-     */
-    void UpdateBtn(List<Button> btn,Button current){
+    private void UpdateBtn(List<Button> btn,Button current){
         for(Button currentBtn :btn) {
             if (currentBtn.equals(current)){
                 currentBtn.setStyle("-fx-background-color: green; -fx-border-color: black;-fx-border-width: 3px;" +
@@ -321,6 +282,11 @@ public class DoctorDashboard extends Application {
             }
         }
     }
+
+    /**
+     * Builds the sidebar navigation with buttons for each section.
+     * returns a VBox containing the sidebar components.
+     */
     private VBox buildSidebar() {
         VBox box = new VBox(10);
         box.setPadding(new Insets(15));
@@ -390,7 +356,7 @@ public class DoctorDashboard extends Application {
             }
         });
 
-        Button emailBtn=new Button("Send Eamil");
+        Button emailBtn=new Button("Send Email");
         allButton.add(emailBtn);
         emailBtn.setMaxWidth(Double.MAX_VALUE);
         emailBtn.setOnAction(e -> {
@@ -414,21 +380,48 @@ public class DoctorDashboard extends Application {
             }
         });
 
+        Button vitalBtn = new Button("View Vitals");
+        allButton.add(vitalBtn);
+        vitalBtn.setMaxWidth(Double.MAX_VALUE);
+        vitalBtn.setOnAction(e -> {
+            UpdateBtn(allButton,vitalBtn);
+            try {
+                root.setCenter(vitalView);
+            } catch (Exception ex) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Failed to view Vitals.");
+            }
+        });
+
         Button logoutBtn=new Button("Logout");
         allButton.add(logoutBtn);
         logoutBtn.setMaxWidth(Double.MAX_VALUE);
         logoutBtn.setOnAction(e -> {
             UpdateBtn(allButton,logoutBtn);
-
+            try {
+                ((Stage) logoutBtn.getScene().getWindow()).close();
+                new LoginApp().start(new Stage());
+            } catch (Exception ex) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Failed to Logout ! Try Again.");
+            }
         });
 
+        Button exitBtn=new Button("Exit");
+        allButton.add(exitBtn);
+        exitBtn.setMaxWidth(Double.MAX_VALUE);
+        exitBtn.setOnAction(e -> {
+            UpdateBtn(allButton,exitBtn);
+            try {
+                ((Stage) exitBtn.getScene().getWindow()).close();
+            } catch (Exception ex) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Failed to close window.");
+            }
+        });
 
         // Style buttons
         for (Button btn : allButton) {
             btn.setStyle("-fx-background-color: #ffffff; -fx-text-fill: #336699;-fx-font-size: 14; -fx-font-weight: bold;");
-
         }
-        box.getChildren().addAll( allButton);
+        box.getChildren().addAll(allButton);
         return box;
 
     }
@@ -437,7 +430,7 @@ public class DoctorDashboard extends Application {
      * Builds the doctor's profile view (read-only information).
      * @return a Pane containing the profile view.
      */
-    private VBox buildProfileView() {
+    private VBox buildProfileView(String currentDoctorId) {
         VBox view = new VBox(10);
         view.setStyle("-fx-font-size:16px;");
         view.setPadding(new Insets(20));
@@ -459,15 +452,14 @@ public class DoctorDashboard extends Application {
         profileLabels.add(new Label("Specialization"));
         profileLabels.add(new Label("Registration"));
 
-        String readQuery = "SELECT * FROM doctor WHERE email=?";
+        String readQuery = "SELECT * FROM doctor WHERE doctor_id = ?";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(readQuery)) {
-                stmt.setString(1,"zk417704@gmail.com");
+                stmt.setString(1,currentDoctorId);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     String id = rs.getString("doctor_id");
-                    currentDoctorId=id;
                     String name = rs.getString("name");
                     java.sql.Date dob = rs.getDate("Dob");
                     String contact = rs.getString("contact");
@@ -538,10 +530,10 @@ public class DoctorDashboard extends Application {
         DatePicker dobPicker = null;
 
         // Read doctor info from DB
-        String readQuery = "SELECT * FROM doctor WHERE email=?";
+        String readQuery = "SELECT * FROM doctor WHERE doctor_id = ?";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(readQuery)) {
-            stmt.setString(1, "zk417704@gmail.com");
+            stmt.setString(1, currentDoctorId);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -630,7 +622,7 @@ public class DoctorDashboard extends Application {
 
                     stmt.executeUpdate();
                     showAlert(Alert.AlertType.INFORMATION, "Success", "Profile updated successfully.");
-                    profileView = buildProfileView(); // refresh
+                    profileView = buildProfileView(currentDoctorId); // refresh
                     root.setCenter(profileView);
                 }
             } catch (Exception ex) {
@@ -669,7 +661,6 @@ public class DoctorDashboard extends Application {
                 String email = rs.getString("email");
                 String bloodGroup = rs.getString("blood_group");
                 String gender = rs.getString("gender");
-               // LocalDate regDate = rs.getDate("registration_date").toLocalDate();
 
                 Patient patient = new Patient(name, email, contact, bloodGroup);
                 patient.setDate_of_birth(dob);
@@ -865,26 +856,7 @@ public class DoctorDashboard extends Application {
         return Pattern.matches(emailRegex, email);
     }
 
-    public static class AppointmentRequest {
-        private final SimpleStringProperty patientName;
-        private final SimpleStringProperty date;
-        private final SimpleStringProperty time;
-        private final SimpleStringProperty status;
 
-        public AppointmentRequest(String patientName, String date, String time, String status) {
-            this.patientName = new SimpleStringProperty(patientName);
-            this.date = new SimpleStringProperty(date);
-            this.time = new SimpleStringProperty(time);
-            this.status = new SimpleStringProperty(status);
-        }
-
-        public String getPatientName() { return patientName.get(); }
-        public String getDate() { return date.get(); }
-        public String getTime() { return time.get(); }
-        public String getStatus() { return status.get(); }
-
-        public void setStatus(String newStatus) { status.set(newStatus); }
-    }
 
 
     public static class Appointment{
