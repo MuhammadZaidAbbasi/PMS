@@ -122,4 +122,69 @@ mvn clean install
 
 ✅ If configured correctly, the GUI will launch!
 
+Users in the System
+-------------------
+There are two main users in the system:
+
+1. Doctor
+   - Can view patient data
+   - Can give feedback
+   - Can check list of patients assigned
+
+2. Patient
+   - Can upload vitals (like heart rate, temperature, etc.)
+   - Can view feedback from the doctor
+
+Packages and Modules
+--------------------
+The system is divided into these packages/modules:
+
+1. management - Handles core logic like users, patients, doctors, etc.
+2. DoctorPatientInteraction - Handles feedback and logs
+3. HealthDataHandling - Handles vitals and their storage
+4. NotificationAndRemainder - Sends email reminders and notifications
+
+Class Responsibilities
+----------------------
+1. User: Base class for Doctor and Patient. Manages basic user info (email, phone, etc.).
+2. Doctor: Inherits from User. Can give feedback, view patients and vitals.
+3. Patient: Inherits from User. Can upload and view vitals.
+4. Feedback: Contains doctor’s notes for the patient.
+5. VitalSign: Stores health data like heart rate, temperature, etc.
+6. EmailNotification: Sends emails using Gmail SMTP server.
+7. RemainderService: Inherits from EmailNotification and sends appointment/medicine reminders.
+
+How It Works (Step-by-Step)
+---------------------------
+1. The system starts and asks users to login or signup.
+2. If logged in as a patient:
+   - Upload your vitals.
+   - Your doctor can see your data.
+3. If logged in as a doctor:
+   - View your assigned patients.
+   - Check their vitals and give feedback.
+4. Emails can be sent as reminders or feedback notifications.
+
+Technologies Used
+-----------------
+1. Java (OOP concepts like inheritance, encapsulation, abstraction)
+2. JavaFX for GUI (Optional)
+3. Jakarta Mail API for sending emails
+4. JDBC for database interaction
+5. MySQL as backend database
+
+Health Data (Vitals)
+--------------------
+Patients upload the following health information:
+
+1. Heart Rate (BPM)
+2. Blood Pressure (Systolic & Diastolic)
+3. Body Temperature (°F)
+4. Breathing Rate (breaths/min)
+5. Oxygen Level (%)
+
+Final Notes
+-----------
+This project demonstrates a working prototype of a healthcare system. It shows how patients and doctors can interact digitally and how health data can be used effectively.
+
 
