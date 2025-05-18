@@ -1,77 +1,73 @@
-🩺 Remote Patient Monitoring System (RPMS)
-This document explains how to set up and use the Remote Patient Monitoring System (RPMS) — a Java-based desktop application developed using JavaFX, OOP principles, and MySQL for backend storage. The goal is to help doctors monitor patient vitals remotely and offer timely feedback.
+# 🩺 Remote Patient Monitoring System (RPMS)
 
-📘 Project Overview
-The Remote Patient Monitoring System enables seamless interaction between doctors and patients. Key functionalities include:
+This document explains how to set up and use the **Remote Patient Monitoring System (RPMS)** — a Java-based desktop application developed using **JavaFX**, **OOP principles**, and **MySQL** for backend storage. The goal is to help doctors monitor patient vitals remotely and offer timely feedback.
 
-🩻 Doctors can view patient health data and provide feedback.
+---
 
-📈 Patients can submit vital signs like:
+## 📘 Project Overview
 
-Blood Pressure
+The **Remote Patient Monitoring System** enables seamless interaction between doctors and patients. Key functionalities include:
 
-Heart Rate
-
-Body Temperature
+- 🩻 **Doctors** can view patient health data and provide feedback.
+- 📈 **Patients** can submit vital signs like:
+  - Blood Pressure
+  - Heart Rate
+  - Body Temperature
 
 This allows remote healthcare monitoring without in-person visits.
 
-💻 Installation & Running (IntelliJ + Maven)
-Follow these steps to clone, configure, and run the project in IntelliJ IDEA.
+---
 
-🔧 Prerequisites
+## 💻 Installation & Running (IntelliJ + Maven)
+
+Follow these steps to **clone**, **configure**, and **run** the project in **IntelliJ IDEA**.
+
+---
+
+### 🔧 Prerequisites
+
 Make sure the following tools are installed:
 
-✅ Java JDK 17 or higher
+- ✅ Java JDK 17 or higher  
+- ✅ IntelliJ IDEA  
+- ✅ Git  
+- ✅ JavaFX SDK (matching your JDK version)  
+- ✅ MySQL Server  
+- ✅ MySQL JDBC Driver (automatically added via Maven)  
+- ✅ Gmail account with **App Password** enabled *(for sending email notifications)*  
+- ✅ Internet connection (Maven will fetch dependencies)
 
-✅ IntelliJ IDEA
+---
 
-✅ Git
+### 🔐 Configure Gmail App Password (for email notifications)
 
-✅ JavaFX SDK (matching your JDK version)
+This project sends email alerts using **Gmail SMTP**, which **requires an app password**.
 
-✅ MySQL Server
+#### Steps to generate:
 
-✅ MySQL JDBC Driver (automatically added via Maven)
-
-✅ Gmail account with App Password enabled (for sending email notifications)
-
-✅ Internet connection (Maven will fetch dependencies)
-
-🔐 Configure Gmail App Password (for email notifications)
-This project sends email alerts using Gmail SMTP, which requires an app password.
-
-Steps to generate:
-Go to https://myaccount.google.com/
-
-Enable 2-Step Verification
-
-Navigate to Security > App Passwords
-
-Choose:
-
-App: Mail
-
-Device: Other → name it (e.g., RPMS App)
-
-Click Generate
-
-Copy the 16-character password
+1. Go to [https://myaccount.google.com/](https://myaccount.google.com/)
+2. Enable **2-Step Verification**
+3. Navigate to **Security > App Passwords**
+4. Choose:
+   - App: Mail
+   - Device: Other → name it (e.g., RPMS App)
+5. Click **Generate**
+6. Copy the **16-character password**
 
 ✅ Use this password in the following files:
+- EmailNotification.java
+- EmailUtil class inside PatientDashboard.java
 
-EmailNotification.java
+---
 
-EmailUtil class inside PatientDashboard.java
+### 📥 Step 1: Clone the Repository
 
-📥 Step 1: Clone the Repository
 Open your terminal or Git Bash and run:
 
-bash
-Copy
-Edit
-git clone https://github.com/your-username/your-repo-name.git
-cd your-repo-name
+git clone [https://github.com/your-username/your-repo-name](https://github.com/MuhammadZaidAbbasi/PMS).git
+cd PMS
+
+
 🧰 Step 2: Open Project in IntelliJ
 Launch IntelliJ IDEA
 
