@@ -113,8 +113,14 @@ If it doesn’t:
     mvn clean install
 
 ---
+###  Step 6: Create Database
 
-### 🏃 Step 6: Run the Application
+1. Create databse named " healthmanagement " in Your MySQL WorkBench.
+2. Open OOP_Schema.sql ( provided ) file in Your MySQL WorkBench.
+3. Select **Run** or Press ctrl + Enter databse with all tables and data will be created in Your Workbench .
+
+
+### 🏃 Step 7: Run the Application
 
 1. Locate the `LoginApp.java` file (this contains the `main()` method).
 2. Right-click on the file.
