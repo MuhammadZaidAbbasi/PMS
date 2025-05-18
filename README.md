@@ -66,66 +66,59 @@ Open your terminal or Git Bash and run:
 
 git clone [https://github.com/your-username/your-repo-name](https://github.com/MuhammadZaidAbbasi/PMS).git
 cd PMS
+### 🧰 Step 2: Open Project in IntelliJ
 
+1. Launch **IntelliJ IDEA**
+2. Go to **File > Open...**
+3. Select the folder where you cloned the project
+4. IntelliJ will detect the `pom.xml` file and import the Maven project structure automatically
 
-🧰 Step 2: Open Project in IntelliJ
-Launch IntelliJ IDEA
+---
 
-Go to File > Open...
+### ⚙️ Step 3: Configure JavaFX SDK
 
-Select the folder where you cloned the project
+1. Download JavaFX SDK from: [https://openjfx.io/](https://openjfx.io/)
+2. Extract it to a known location, for example:
+   - `C:\javafx-sdk-20\` (on Windows)
+   - `/opt/javafx-sdk-20/` (on Linux/macOS)
+3. In IntelliJ:
+   - Open **Project Structure** (`Ctrl + Alt + Shift + S`)
+   - Navigate to **Libraries > + > Java**
+   - Select the directory: `/path/to/javafx-sdk-XX/lib`
+   - Click **OK** and **Apply**
 
-IntelliJ will detect the pom.xml and import the Maven project structure
+---
 
-⚙️ Step 3: Configure JavaFX SDK
-Download JavaFX SDK from https://openjfx.io/
+### ⚙️ Step 4: Add VM Options for JavaFX
 
-Extract it to a known location, e.g.,:
+1. Go to **Run > Edit Configurations...**
+2. Under **VM Options**, add the following:
 
-C:\javafx-sdk-20\ (Windows)
+   ```bash
+   --module-path /path/to/javafx-sdk-XX/lib --add-modules javafx.controls,javafx.fxml
+✅ Replace `/path/to/javafx-sdk-XX/lib` with the actual path where you extracted the JavaFX SDK.
 
-/opt/javafx-sdk-20/ (Linux/macOS)
+---
 
-In IntelliJ:
+### 📦 Step 5: Let Maven Install Dependencies
 
-Open Project Structure (Ctrl + Alt + Shift + S)
+IntelliJ will automatically download all required dependencies listed in `pom.xml`.
 
-Go to Libraries > + > Java
+If it doesn’t:
 
-Select /path/to/javafx-sdk-XX/lib
+1. Open the **Maven** tab (usually on the right side of IntelliJ)
+2. Click the **Refresh icon** 🔄  
+**OR** run the following command in your terminal:
 
-Click OK and Apply
-
-⚙️ Step 4: Add VM Options for JavaFX
-To ensure JavaFX modules load properly:
-
-Go to Run > Edit Configurations...
-
-Under VM Options, add:
-
-bash
-Copy
-Edit
---module-path /path/to/javafx-sdk-XX/lib --add-modules javafx.controls,javafx.fxml
-✅ Replace /path/to/javafx-sdk-XX/lib with your actual path.
-
-📦 Step 5: Let Maven Install Dependencies
-IntelliJ will automatically download dependencies via pom.xml
-
-If it doesn’t, do the following:
-
-Open the Maven tab (usually on the right)
-
-Click the Refresh icon 🔄
-OR run from terminal:
-
-bash
-Copy
-Edit
+```bash
 mvn clean install
-🏃 Step 6: Run the Application
-Locate the LoginApp.java file (contains the main() method)
+---
 
-Right-click the file → Run 'LoginApp.main()'
+###🏃 Step 6: Run the Application
+
+1. Locate the `LoginApp.java` file (this contains the `main()` method).
+2. Right-click on the file.
+3. Select **Run 'LoginApp.main()'**.
 
 ✅ If configured correctly, the GUI will launch!
+
