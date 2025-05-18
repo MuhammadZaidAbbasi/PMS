@@ -64,7 +64,7 @@ This project sends email alerts using **Gmail SMTP**, which **requires an app pa
 
 Open your terminal or Git Bash and run:
 
-git clone [https://github.com/your-username/your-repo-name](https://github.com/MuhammadZaidAbbasi/PMS).git
+git clone [https://github.com/your-username/your-repo-name.git](https://github.com/MuhammadZaidAbbasi/PMS).git
 cd PMS
 ### 🧰 Step 2: Open Project in IntelliJ
 
