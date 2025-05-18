@@ -1,13 +1,13 @@
-Remote Patient Monitoring System (RPMS)
+#Remote Patient Monitoring System (RPMS)
 This document explains how to use and understand the Remote Patient Monitoring System (RPMS). This system is created using Java, with concepts of Object-Oriented Programming (OOP) and JavaFX for the user interface. The project helps monitor the health of patients remotely using feedback and vital signs.
 Project Overview
 The Remote Patient Monitoring System allows doctors and patients to interact through software. Doctors can view patients' vitals and give feedback. Patients can upload their health data like blood pressure, heart rate, and temperature. This data helps doctors monitor them even if they are far away.
 
 
- 💻 Installation & Running (IntelliJ + Maven)
+ ##💻 Installation & Running (IntelliJ + Maven)
 Follow the steps below to clone this Maven-based JavaFX project from GitHub and run it using IntelliJ IDEA:
 
-🔧 Prerequisites
+##🔧 Prerequisites
 Ensure the following tools are installed:
 
 ✅ Java JDK 17 or higher
