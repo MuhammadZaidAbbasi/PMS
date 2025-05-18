@@ -1,88 +1,135 @@
-#Remote Patient Monitoring System (RPMS)
-This document explains how to use and understand the Remote Patient Monitoring System (RPMS). This system is created using Java, with concepts of Object-Oriented Programming (OOP) and JavaFX for the user interface. The project helps monitor the health of patients remotely using feedback and vital signs.
-Project Overview
-The Remote Patient Monitoring System allows doctors and patients to interact through software. Doctors can view patients' vitals and give feedback. Patients can upload their health data like blood pressure, heart rate, and temperature. This data helps doctors monitor them even if they are far away.
+🩺 Remote Patient Monitoring System (RPMS)
+This document explains how to set up and use the Remote Patient Monitoring System (RPMS) — a Java-based desktop application developed using JavaFX, OOP principles, and MySQL for backend storage. The goal is to help doctors monitor patient vitals remotely and offer timely feedback.
 
+📘 Project Overview
+The Remote Patient Monitoring System enables seamless interaction between doctors and patients. Key functionalities include:
 
- ##💻 Installation & Running (IntelliJ + Maven)
-Follow the steps below to clone this Maven-based JavaFX project from GitHub and run it using IntelliJ IDEA:
+🩻 Doctors can view patient health data and provide feedback.
 
-##🔧 Prerequisites
-Ensure the following tools are installed:
+📈 Patients can submit vital signs like:
+
+Blood Pressure
+
+Heart Rate
+
+Body Temperature
+
+This allows remote healthcare monitoring without in-person visits.
+
+💻 Installation & Running (IntelliJ + Maven)
+Follow these steps to clone, configure, and run the project in IntelliJ IDEA.
+
+🔧 Prerequisites
+Make sure the following tools are installed:
 
 ✅ Java JDK 17 or higher
+
 ✅ IntelliJ IDEA
+
 ✅ Git
-✅ JavaFX SDK (match your JDK version)
+
+✅ JavaFX SDK (matching your JDK version)
+
 ✅ MySQL Server
-✅ MySQL JDBC Driver (handled by Maven)
-✅ Gmail Account with App Password Enabled (required to send emails)
-✅ Internet connection for Maven to download dependencies
 
-🔐 How to Generate an App Password (Gmail)
+✅ MySQL JDBC Driver (automatically added via Maven)
+
+✅ Gmail account with App Password enabled (for sending email notifications)
+
+✅ Internet connection (Maven will fetch dependencies)
+
+🔐 Configure Gmail App Password (for email notifications)
+This project sends email alerts using Gmail SMTP, which requires an app password.
+
+Steps to generate:
 Go to https://myaccount.google.com/
-Enable 2-Step Verification if not already enabled.
+
+Enable 2-Step Verification
+
 Navigate to Security > App Passwords
-Select the app: Mail
-Select the device: Other, and name it (e.g., Admin)
+
+Choose:
+
+App: Mail
+
+Device: Other → name it (e.g., RPMS App)
+
 Click Generate
-Copy the 16-character app password shown — and use it in " EmailNotification.java" and "EmailUtil in PatientDashboard.java ".
 
+Copy the 16-character password
 
+✅ Use this password in the following files:
+
+EmailNotification.java
+
+EmailUtil class inside PatientDashboard.java
 
 📥 Step 1: Clone the Repository
-Open terminal or Git Bash and run:
+Open your terminal or Git Bash and run:
 
+bash
+Copy
+Edit
 git clone https://github.com/your-username/your-repo-name.git
 cd your-repo-name
-
 🧰 Step 2: Open Project in IntelliJ
-Launch IntelliJ IDEA.
+Launch IntelliJ IDEA
 
-Click File > Open...
+Go to File > Open...
 
-Select the root folder of the cloned project.
+Select the folder where you cloned the project
 
-IntelliJ will automatically detect the pom.xml and import the Maven structure.
+IntelliJ will detect the pom.xml and import the Maven project structure
 
 ⚙️ Step 3: Configure JavaFX SDK
-Download JavaFX SDK from https://openjfx.io/.
+Download JavaFX SDK from https://openjfx.io/
 
-Extract it to a known location (e.g., C:\javafx-sdk-20 or /opt/javafx-sdk-20).
+Extract it to a known location, e.g.,:
+
+C:\javafx-sdk-20\ (Windows)
+
+/opt/javafx-sdk-20/ (Linux/macOS)
 
 In IntelliJ:
 
-Open Project Structure (Ctrl+Alt+Shift+S)
+Open Project Structure (Ctrl + Alt + Shift + S)
 
 Go to Libraries > + > Java
 
 Select /path/to/javafx-sdk-XX/lib
 
-Apply the changes.
+Click OK and Apply
 
 ⚙️ Step 4: Add VM Options for JavaFX
-To run your app with JavaFX:
+To ensure JavaFX modules load properly:
 
 Go to Run > Edit Configurations...
 
 Under VM Options, add:
 
+bash
+Copy
+Edit
 --module-path /path/to/javafx-sdk-XX/lib --add-modules javafx.controls,javafx.fxml
 ✅ Replace /path/to/javafx-sdk-XX/lib with your actual path.
 
 📦 Step 5: Let Maven Install Dependencies
-IntelliJ will auto-download dependencies from pom.xml. If not:
+IntelliJ will automatically download dependencies via pom.xml
 
-Open the Maven tab (right sidebar).
+If it doesn’t, do the following:
 
-Click the refresh button 🔄or run:
+Open the Maven tab (usually on the right)
 
+Click the Refresh icon 🔄
+OR run from terminal:
+
+bash
+Copy
+Edit
 mvn clean install
-
 🏃 Step 6: Run the Application
-Locate the LoginApp.java class (contains the main() method).
+Locate the LoginApp.java file (contains the main() method)
 
-Right-click and choose Run 'LoginApp.main()'.
+Right-click the file → Run 'LoginApp.main()'
 
-🎉 The GUI should launch successfully!
-
+✅ If configured correctly, the GUI will launch!
