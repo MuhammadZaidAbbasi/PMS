@@ -109,16 +109,17 @@ If it doesn’t:
 1. Open the **Maven** tab (usually on the right side of IntelliJ)
 2. Click the **Refresh icon** 🔄  
 **OR** run the following command in your terminal:
-
-```bash
+    ```bash
 mvn clean install
+
 ---
 
-###🏃 Step 6: Run the Application
+### 🏃 Step 6: Run the Application
 
 1. Locate the `LoginApp.java` file (this contains the `main()` method).
 2. Right-click on the file.
 3. Select **Run 'LoginApp.main()'**.
 
 ✅ If configured correctly, the GUI will launch!
+
 
