@@ -110,7 +110,7 @@ If it doesn’t:
 2. Click the **Refresh icon** 🔄  
 **OR** run the following command in your terminal:
     ```bash
-mvn clean install
+    mvn clean install
 
 ---
 
