@@ -8,11 +8,14 @@ This document explains how to set up and use the **Remote Patient Monitoring Sys
 
 The **Remote Patient Monitoring System** enables seamless interaction between doctors and patients. Key functionalities include:
 
-- 🩻 **Doctors** can view patient health data and provide feedback.
+-  **Doctors** can view patient health data and provide feedback.
+  - Doctor can Acept or Reject Appointments. 
 - 📈 **Patients** can submit vital signs like:
-  - Blood Pressure
-  - Heart Rate
-  - Body Temperature
+  - Blood Pressure - Heart Rate - Body Temperature
+  - Patient can apply for Appointments
+-   **Admin** can manage System and perform duties like
+  - Add or Remove Patient/Doctor
+  - generate System Report and View System Logs 
 
 This allows remote healthcare monitoring without in-person visits.
 ---
