@@ -17,6 +17,10 @@ The **Remote Patient Monitoring System** enables seamless interaction between do
 This allows remote healthcare monitoring without in-person visits.
 
 ---
+## 📘 GUI Look
+![image](https://github.com/user-attachments/assets/04e7cd4f-a2fd-4e38-a447-e8ee1437845f)
+
+---
 
 ## 💻 Installation & Running (IntelliJ + Maven)
 
