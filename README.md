@@ -37,8 +37,8 @@ Follow these steps to **clone**, **configure**, and **run** the project in **Int
 
 Make sure the following tools are installed:
 
-- ✅ Java JDK 17 or higher  [ Download Java JDK 17+ (Oracle)]( Download Java JDK 17+ (Oracle))
-- ✅ IntelliJ IDEA  [🔗 Download IntelliJ IDEA (Community or Ultimate)](🔗 Download IntelliJ IDEA (Community or Ultimate))
+- ✅ Java JDK 17 or higher [https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html] (https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
+- ✅ IntelliJ IDEA  [https://www.jetbrains.com/idea/download/?section=windows](https://www.jetbrains.com/idea/download/?section=windows)
 - ✅ Git  [🔗 Download Git](🔗 Download Git)
 - ✅ JavaFX SDK (matching your JDK version)  []()
 - ✅ MySQL Server  [🔗 Download JavaFX SDK](🔗 Download JavaFX SDK)
