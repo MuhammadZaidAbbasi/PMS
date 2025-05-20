@@ -8,14 +8,23 @@ This document explains how to set up and use the **Remote Patient Monitoring Sys
 
 The **Remote Patient Monitoring System** enables seamless interaction between doctors and patients. Key functionalities include:
 
--  **Doctors** can view patient health data and provide feedback :
-  - Doctor can Acept or Reject Appointments. 
-- 📈 **Patients** can submit vital signs like:
-  - Blood Pressure - Heart Rate - Body Temperature
-  - Patient can apply for Appointments
--   **Admin** can manage System and perform duties like:
-  - Add or Remove Patient/Doctor
-  - generate System Report and View System Logs 
+## 👨‍⚕️ Roles & Features
+
+- **Doctors** can view patient health data and provide feedback:
+  - Accept or reject appointment requests
+  - Review submitted vital signs and respond with feedback
+
+- 📈 **Patients** can:
+  - Submit vital signs like:
+    - Blood Pressure  
+    - Heart Rate  
+    - Body Temperature
+  - Apply for appointments with available doctors
+
+- 🛠️ **Admin** can manage the system:
+  - Add or remove patients and doctors
+  - Generate system reports and view system logs
+
 
 This allows remote healthcare monitoring without in-person visits.
 ---
@@ -37,7 +46,7 @@ Follow these steps to **clone**, **configure**, and **run** the project in **Int
 
 Make sure the following tools are installed:
 
-- ✅ Java JDK 17 or higher (https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
+- ✅ Java JDK 17 or higher https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html
 - ✅ IntelliJ IDEA  [https://www.jetbrains.com/idea/download/?section=windows](https://www.jetbrains.com/idea/download/?section=windows)
 - ✅ Git  [https://git-scm.com/downloads](https://git-scm.com/downloads)
 - ✅ JavaFX SDK (matching your JDK versio)  [https://gluonhq.com/products/javafx/](https://gluonhq.com/products/javafx/)
