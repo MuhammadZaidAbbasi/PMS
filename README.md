@@ -37,7 +37,7 @@ Follow these steps to **clone**, **configure**, and **run** the project in **Int
 
 Make sure the following tools are installed:
 
-- ✅ Java JDK 17 or higher  [🔗 Download Java JDK 17+ (Oracle)](🔗 Download Java JDK 17+ (Oracle))
+- ✅ Java JDK 17 or higher  [ Download Java JDK 17+ (Oracle)]( Download Java JDK 17+ (Oracle))
 - ✅ IntelliJ IDEA  [🔗 Download IntelliJ IDEA (Community or Ultimate)](🔗 Download IntelliJ IDEA (Community or Ultimate))
 - ✅ Git  [🔗 Download Git](🔗 Download Git)
 - ✅ JavaFX SDK (matching your JDK version)  []()
