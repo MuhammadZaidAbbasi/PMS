@@ -25,7 +25,6 @@ The **Remote Patient Monitoring System** enables seamless interaction between do
   - Add or remove patients and doctors
   - Generate system reports and view system logs
 
-
 This allows remote healthcare monitoring without in-person visits.
 ---
 ## 📘 Google Deive link 
