@@ -37,11 +37,11 @@ Follow these steps to **clone**, **configure**, and **run** the project in **Int
 
 Make sure the following tools are installed:
 
-- ✅ Java JDK 17 or higher [https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html] (https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
+- ✅ Java JDK 17 or higher (https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
 - ✅ IntelliJ IDEA  [https://www.jetbrains.com/idea/download/?section=windows](https://www.jetbrains.com/idea/download/?section=windows)
-- ✅ Git  [🔗 Download Git](🔗 Download Git)
-- ✅ JavaFX SDK (matching your JDK version)  []()
-- ✅ MySQL Server  [🔗 Download JavaFX SDK](🔗 Download JavaFX SDK)
+- ✅ Git  [https://git-scm.com/downloads](https://git-scm.com/downloads)
+- ✅ JavaFX SDK (matching your JDK versio)  [https://gluonhq.com/products/javafx/](https://gluonhq.com/products/javafx/)
+- ✅ MySQL Server  [https://gluonhq.com/products/javafx/](https://gluonhq.com/products/javafx/)
 - ✅ MySQL JDBC Driver (automatically added via Maven)  
 - ✅ Gmail account with **App Password** enabled *(for sending email notifications)*  
 - ✅ Internet connection (Maven will fetch dependencies)
