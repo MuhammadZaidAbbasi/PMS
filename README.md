@@ -17,7 +17,7 @@ The **Remote Patient Monitoring System** enables seamless interaction between do
 This allows remote healthcare monitoring without in-person visits.
 ---
 ## 📘 Google Deive link 
-![https://drive.google.com/drive/folders/18126j6PTtK6uMkL552zc4TFy7D95_aH7](https://drive.google.com/drive/folders/18126j6PTtK6uMkL552zc4TFy7D95_aH7)
+[https://drive.google.com/drive/folders/18126j6PTtK6uMkL552zc4TFy7D95_aH7](https://drive.google.com/drive/folders/18126j6PTtK6uMkL552zc4TFy7D95_aH7)
 ---
 ---
 ## 📘 GUI Look
