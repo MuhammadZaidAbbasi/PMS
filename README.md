@@ -29,7 +29,7 @@ The **Remote Patient Monitoring System** enables seamless interaction between do
 This allows remote healthcare monitoring without in-person visits.
 ---
 ## 📘 Google Deive link 
-[Goto google Drive ](https://drive.google.com/drive/folders/18126j6PTtK6uMkL552zc4TFy7D95_aH7?usp=sharing)
+[https://drive.google.com/drive/folders/18126j6PTtK6uMkL552zc4TFy7D95_aH7?usp=sharing](https://drive.google.com/drive/folders/18126j6PTtK6uMkL552zc4TFy7D95_aH7?usp=sharing)
 ---
 ---
 ## 📘 GUI Look
@@ -46,7 +46,7 @@ Follow these steps to **clone**, **configure**, and **run** the project in **Int
 
 Make sure the following tools are installed:
 
-- ✅ Java JDK 17 or higher[Goto Installation ](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
+- ✅ [Java JDK 17 or higher ](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
 - ✅ [IntelliJ IDEA](https://www.jetbrains.com/idea/download/?section=windows)
 - ✅ [Git](https://git-scm.com/downloads)
 - ✅ [JavaFX SDK (matching your JDK versio)](https://gluonhq.com/products/javafx/)
